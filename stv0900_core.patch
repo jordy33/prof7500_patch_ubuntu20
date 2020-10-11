@@ -1,0 +1,118 @@
+--- linux-source-5.4.0/drivers/media/dvb-frontends/stv0900_core.c	2019-11-25 00:32:01.000000000 +0000
++++ ./stv0900_core.c	2020-10-09 22:14:56.430810483 +0000
+@@ -370,6 +370,7 @@
+ 			case STV0900_SERIAL_PUNCT_CLOCK:
+ 			case STV0900_SERIAL_CONT_CLOCK:
+ 			default:
++				stv0900_write_bits(intp,F0900_P1_TSFIFO_MANSPEED, 0);
+ 				stv0900_write_reg(intp, R0900_TSGENERAL,
+ 							0x00);
+ 				break;
+@@ -400,6 +401,7 @@
+ 				break;
+ 			case STV0900_PARALLEL_PUNCT_CLOCK:
+ 			case STV0900_DVBCI_CLOCK:
++				stv0900_write_bits(intp,F0900_P2_TSFIFO_MANSPEED, 0);
+ 				stv0900_write_reg(intp,
+ 						R0900_TSGENERAL, 0x0A);
+ 				dprintk("%s: 0x0a\n", __func__);
+@@ -415,6 +417,7 @@
+ 			case STV0900_SERIAL_PUNCT_CLOCK:
+ 			case STV0900_SERIAL_CONT_CLOCK:
+ 			default:
++				stv0900_write_bits(intp,F0900_P1_TSFIFO_MANSPEED, 0);
+ 				stv0900_write_reg(intp, R0900_TSGENERAL1X,
+ 							0x10);
+ 				break;
+@@ -446,6 +449,7 @@
+ 				break;
+ 			case STV0900_PARALLEL_PUNCT_CLOCK:
+ 			case STV0900_DVBCI_CLOCK:
++				stv0900_write_bits(intp,F0900_P2_TSFIFO_MANSPEED, 0);
+ 				stv0900_write_reg(intp, R0900_TSGENERAL1X,
+ 							0x12);
+ 				dprintk("%s: 0x12\n", __func__);
+@@ -1570,6 +1574,53 @@
+ 	struct stv0900_signal_info p_result = intp->result[demod];
+ 
+ 	enum fe_stv0900_error error = STV0900_NO_ERROR;
++	
++	int fe_stv0900_tracking_standard_return[] = {
++ 		SYS_DVBS,
++ 		SYS_DVBS2,
++ 		SYS_DSS,
++ 		SYS_DVBS2
++ 	};
++ 
++ 	int fe_stv0900_modulation_return[] = {
++ 		QPSK,
++ 		PSK_8,
++ 		APSK_16,
++ 		APSK_32
++ 	};
++ 
++ 	int fe_stv0900_modcode_return[] = {
++ 		FEC_NONE,
++ 		FEC_AUTO,
++ 		FEC_AUTO,
++ 		FEC_AUTO,
++ 		FEC_1_2,
++ 		FEC_3_5,
++ 		FEC_2_3,
++ 		FEC_3_4,
++ 		FEC_4_5,
++ 		FEC_5_6,
++ 		FEC_8_9,
++ 		FEC_9_10,
++ 		FEC_3_5,
++ 		FEC_2_3,
++ 		FEC_3_4,
++ 		FEC_5_6,
++ 		FEC_8_9,
++ 		FEC_9_10,
++ 		FEC_2_3,
++ 		FEC_3_4,
++ 		FEC_4_5,
++ 		FEC_5_6,
++ 		FEC_8_9,
++ 		FEC_9_10,
++ 		FEC_3_4,
++ 		FEC_4_5,
++ 		FEC_5_6,
++ 		FEC_8_9,
++ 		FEC_9_10,
++ 		FEC_AUTO
++ 	};
+ 
+ 	dprintk("%s: ", __func__);
+ 
+@@ -1590,6 +1641,12 @@
+ 	p_search.standard = STV0900_AUTO_SEARCH;
+ 	p_search.iq_inversion = STV0900_IQ_AUTO;
+ 	p_search.search_algo = STV0900_BLIND_SEARCH;
++
++ 	if (c->fec_inner == 9)
++ 		p_search.search_algo = STV0900_BLIND_SEARCH;
++ 	else
++ 		p_search.search_algo = STV0900_WARM_START;
++
+ 	/* Speeds up DVB-S searching */
+ 	if (c->delivery_system == SYS_DVBS)
+ 		p_search.standard = STV0900_SEARCH_DVBS1;
+@@ -1614,6 +1671,16 @@
+ 		p_result.spectrum = intp->result[demod].spectrum;
+ 		p_result.rolloff = intp->result[demod].rolloff;
+ 		p_result.modulation = intp->result[demod].modulation;
++		// UDL
++ 		c->frequency		= p_result.frequency;
++ 		c->symbol_rate		= p_result.symbol_rate;
++ 		c->fec_inner		= fe_stv0900_modcode_return[p_result.fec];
++ 		c->pilot		= p_result.pilot;
++ 		c->rolloff		= p_result.rolloff;
++ 		c->modulation		= fe_stv0900_modulation_return[p_result.modulation];
++ 		c->inversion		= p_result.spectrum;
++ 		c->delivery_system	= fe_stv0900_tracking_standard_return[p_result.standard];
++ 		dprintk("TEST fec: %d %d \n", p_result.fec, c->fec_inner);
+ 	} else {
+ 		p_result.locked = FALSE;
+ 		switch (intp->err[demod]) {
