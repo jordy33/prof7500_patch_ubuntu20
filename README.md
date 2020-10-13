@@ -48,13 +48,8 @@ uname -a
 ```
 
 ### Install Tvheadend
-Update
-```
-apt-get update
-apt-get upgrade
-```
 
-### Language
+Language
 
 First run locale to list what locales currently defined for the current user account:
 ```
