@@ -3,6 +3,9 @@
 First of all we are going to install the missing dependencies
 ```
 sudo -i
+cd ~
+git clone https://github.com/jordy33/ubuntu_20_prof7500_patch_tvheadend.git
+cd ~
 apt-get update && apt-get upgrade && apt-get install -y build-essential libncurses5-dev gcc libssl-dev grub2 bc bison flex libelf-dev
 ```
 
