@@ -135,8 +135,31 @@ Next:
  │ managers --purge option, e.g, apt-get remove --purge tvheadend* 
 Follow Directions give password Enter Tvheadend
 
-http://192.168.1.84:9981
+http://192.168.1.84:9981. (use user and password previously selected)
 ```
+
+### Create universal access to tvheadend
+Create user * with password * and allow network: 192.168.0.0/24 and allow all permisions.
+In TVH change in General/Base/Authentication type= Plain Insecure:
+
+
+### Install FFmpeg
+```
+sudo apt install ffmpeg
+ffmpeg -version
+```
+
+
+### Create a mux for NBC
+In tvh add an IPTV network (no automatic).  Add a mux for that network and use a URL like this....
+
+```
+pipe:///usr/bin/ffmpeg -loglevel fatal -re -i http://admin:trinity@192.168.1.84:9981/stream/channel/43e4470dded1a2ca5c5c2d80f8df844b?ticket=8f09d95d8f714ff2b8054366f6d5c9f23013a7be -c:v copy -filter_complex [0:1][0:2][0:3]amerge=inputs=3,pan=5.1|FL=c0|FR=c1|FC=c2|LFE=c3|BL=c4|BR=c5 -c:a eac3 -f mpegts pipe:1
+```
+
+(Get the http link openning the link to open the channel)
+
+It'll scan in a new service and you just map that to a new channel.  
 
 ### Install OSCAM
 
