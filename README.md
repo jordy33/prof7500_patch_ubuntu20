@@ -97,6 +97,22 @@ Configuring
 cd ..
 ```
 
+```
+sudo dpkg -i tvheadend_4.3*.deb
+```
 
+```
+ ┌─────────────────────────┤ Configuring tvheadend ├─────────────────────────┐
+ │ Tvheadend is accessed via a world reachable web interface (assuming your  │ 
+ │ host is reachable from the internet). To protect from malicious use you   │ 
+ │ must create an initial account to be able to login to Tvheadend. This     │ 
+ │ account can not be changed nor deleted from within Tvheadend itself. If   │ 
+ │ you want to change the superuser account you need to reconfigure the      │ 
+ │ Tvheadend package.                                                        │ 
+ │                                                                           │ 
+ │ Choose a username for Tvheadend administrator.  
+```
+
+Choose: admin and password
 
 
