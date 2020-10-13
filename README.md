@@ -116,3 +116,24 @@ sudo dpkg -i tvheadend_4.3*.deb
 Choose: admin and password
 
 
+it will show:
+```
+ | Tvheadend is accessed via a world reachable web interface (assuming your  │ 
+ │ host is reachable from the internet). To protect from malicious use you   │ 
+ │ must create an initial account to be able to login to Tvheadend. This     │ 
+ │ account can not be changed nor deleted from within Tvheadend itself. If   │ 
+ │ you want to change the superuser account you need to reconfigure the      │ 
+ │ Tvheadend package. 
+```
+
+Next:
+```
+ │ After installation Tvheadend can be accessed via HTTP on port 9981. From  │ 
+ │ this machine you can point your web-browser to http://localhost:9981/.    │ 
+ │                                                                           │ 
+ │ If you want to completely remove configuration, use your package          │ 
+ │ managers --purge option, e.g, apt-get remove --purge tvheadend* 
+Follow Directions give password Enter Tvheadend
+
+http://192.168.1.84:9981
+```
